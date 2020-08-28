@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+		.dashed_b
+		{
+			border-style: groove;
+			border-width :10px;
+			border-color:red green blue yellow;
+			border-width: 100%;
+			border-height:100%;
+			border-position: fixed;
+		}
+		.bgimage {
+				  background-image: url("2.jpg");
+				  background-color: #cccccc;
+				  height: 600px;
+				  background-position: center;
+				  background-repeat: no-repeat;
+				  background-size: cover;
+				  position: fixed;
+				}
+		.text{
+			color: red;
+			font-size:18px;
+			text-align: center;
+		}
+		.align{
+			font-size:18px;
+			text-align: center;
+		}
+		.shadow{
+			box-shadow: 5px 0px 10px 10px #cc0052;
+		}
+		.split1 {
+  		height: 90%;
+  		width: 50%;
+  		z-index: 1;
+  		overflow-x: hidden;
+  		padding-top: 0px;
+  		position: fixed;
+		}
+		.split2 {
+  		height: 95%;
+  		width: 50%;
+
+  		position: fixed;
+		}
+		.left {
+		  left: 1%;
+		  background-color: lightgreen;
+
+		}
+		.top{
+			top:0%;
+			height:50%;
+			background-color: yellow;
+		}
+		.bottom{
+			bottom: 47%;
+			height:50%;
+			background-color: blue;
+		}
+		
+		
+		.right {
+	  	  right: 1%;
+	      background-color: lightblue;
+
+	}
+		.selectl{
+		  width: 150px;
+		  height: 30px;
+		  color: #01665a;
+		  font-size: 20px;
+		  background-color: #fc7b03;
+		}
+::selection {
+  color: red;
+  background: yellow;
+}
+textarea {
+   resize: none;
+}
+.textformat{
+  color: #80ff80;
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+}
+
+		</style>
+</head>
+<body style="background-color:brown">
+
+	<form action='/compiler' method='POST'>
+	<input type="hidden" id="errId" name="errId" value={{ou.ae}}>
+	<div><h1  align="center"  class=" text textformat dashed_b img " >A - Z COMPILER</h1>
+		<div style="background-color:lightblue">
+			<p class="text ">  
+			!!!WELCOME, HERE YOU CAN COMPILE CODE...
+			</p>
+		</div>
+
+		<div class="split1 left text">
+			SELECT LANGUAGE:<select id="language" name="lan" align="center" class="selectl">
+								<option selected>{{ou.type}}</option>
+								<option>C</option>
+								<OPTION>C++</OPTION>
+								<OPTION>JAVA</OPTION>
+								<OPTION>PYTHON</OPTION>
+							</select><br><br>
+		<div class="custom-file">
+  			UPLOAD FILE:<input type="file" class="custom-file-input" id="customFile"  accept="html/js/py/c/cpp/java" onclick="upload()">
+  			<button type="button" value="save" id="save">Save</button>
+  		</div><br>
+			<textarea  rows=15  cols=50 id="code" name="file" style="background-color:#236ee8;font-size:15px;color:white;" autofocus placeholder="//spend your knowledge"  >{{ou.code}}</textarea>
+	  		
+	  	
+		</div>
+		<div class="split1 right align">
+			<div>
+			<div class=" top" >
+				<h5 >INPUT:</h5>
+				<textarea id="input" cols=40 rows=15 name="in">{{ou.input}}</textarea>
+			</div>
+		</div>
+			<button id="submit" onclick="process()">RUN</button>
+			<div class="bottom" >
+				<h5>OUTPUT:</h5>
+				<div>
+				<button onclick="copy()" type="button" align="right">Copy</button>
+			
+				<textarea id="output"cols=40 rows=10 name="out" readonly>{% for i in lis %}{{ i }}{% endfor %}</textarea>
+				<textarea id='time' cols=40 rows=1 readonly>{{ou.time}}</textarea>
+				</div>	
+			</div>
+	</div>
+	
+	</form>
+	<script>
+		function proces(){
+		let a=document.getElementById('errId').value
+		alert(a)
+		}
+		function upload(){
+			let file=document.getElementById("customFile").textcontent;
+			alert(file)
+		}
+		function upload(){
+  document.getElementById('customFile').addEventListener('change', handleFileSelect, false);
+}
+function handleFileSelect(event){
+  const reader = new FileReader()
+  reader.onload = handleFileLoad;
+  reader.readAsText(event.target.files[0])
+}
+
+function handleFileLoad(event){
+  document.getElementById('code').value = event.target.result;
+}
+function rowcount(event){
+	alert("sovi")
+
+}
+function myFunction() {
+let a=document.getElementById("errId").value;
+if(a=="err")
+	{
+	document.getElementById("output").style.color = "red";
+	}
+else{
+document.getElementById("output").style.color = "green";
+}
+}
+
+window.onload = function() {
+    var reloading = sessionStorage.getItem("reloading");
+    if (reloading) {
+        sessionStorage.removeItem("reloading");
+        myFunction();
+    }
+}
+
+function process() {
+   
+    sessionStorage.setItem("reloading", "true");
+    document.location.reload();
+}
+document.getElementById( 'code' ).addEventListener( 'keydown', function( event ) {
+
+    if ( event.keyCode === 9 ) {
+
+        // Set up some variables. We need to know the current position of the cursor or selection.
+        var selectionStartPos = this.selectionStart;
+        var selectionEndPos   = this.selectionEnd;
+        var oldContent        = this.value;
+
+        // Set the new content.
+        this.value = oldContent.substring( 0, selectionStartPos ) + "\t" + oldContent.substring( selectionEndPos );
+
+        // Set the new cursor position (current position + 1 to account for the new tab character).
+        this.selectionStart = this.selectionEnd = selectionStartPos + 1;
+
+        // Prevent the default action (tabbing to the next field or control).
+        event.preventDefault();
+    }
+});
+function copy() {
+  var copyText = document.getElementById("output");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999)
+  document.execCommand("copy");
+}
+function saveTextAsFile() {
+  var textToWrite = document.getElementById('code').value;
+  var textFileAsBlob = new Blob([ textToWrite ], { type: 'text/plain' });
+  var type=document.getElementById("language").value
+  if (type=='C'){
+  	type='c'
+  }
+  else if(type=='PYTHON'){
+  	type="py"
+  }
+  else if(type=='C++'){
+  	type='cpp'
+  }
+  else if(type=='JAVA'){
+  	type='java'
+  }
+  var fileNameToSaveAs = "sovi."+type;
+
+
+  var downloadLink = document.createElement("a");
+  downloadLink.download = fileNameToSaveAs;
+  downloadLink.innerHTML = "Download File";
+  if (window.webkitURL != null) {
+    // Chrome allows the link to be clicked without actually adding it to the DOM.
+    downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+  } else {
+    // Firefox requires the link to be added to the DOM before it can be clicked.
+    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+  }
+
+  downloadLink.click();
+}
+
+var button = document.getElementById('save');
+button.addEventListener('click', saveTextAsFile);
+
+function destroyClickedElement(event) {
+  // remove the link from the DOM
+  document.body.removeChild(event.target);
+}
+	</script>
+</body>
+</html>
